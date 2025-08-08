@@ -1,0 +1,1695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WoofMeow 2.0 - Pet Dating Redefined</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --dog-color: #FF9F43;
+            --cat-color: #A55EEA;
+            --bird-color: #26DE81;
+            --small-pet-color: #FC5C65;
+            --primary-text: #2d3436;
+            --secondary-text: #636e72;
+            --light-bg: #f5f6fa;
+            --card-bg: #ffffff;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--light-bg);
+            color: var(--primary-text);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        
+        /* Header with animated pet parade */
+        .header {
+            background: linear-gradient(135deg, var(--dog-color), var(--cat-color));
+            padding: 2.5rem 1rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .pet-parade {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+        }
+        
+        .parade-pet {
+            width: 60px;
+            height: 60px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: bottom;
+            animation: parade 20s linear infinite;
+            opacity: 0.9;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+            transform-origin: bottom;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+        
+        .parade-pet:hover {
+            transform: scale(1.2);
+        }
+        
+        @keyframes parade {
+            0% { transform: translateX(-100px) rotate(-10deg); }
+            100% { transform: translateX(calc(100vw + 100px)) rotate(10deg); }
+        }
+        
+        h1 {
+            color: white;
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            margin: 0.5rem 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 2;
+            font-weight: 700;
+        }
+        
+        .tagline {
+            color: rgba(255,255,255,0.95);
+            font-size: clamp(1.1rem, 2.2vw, 1.4rem);
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: 500;
+        }
+        
+        /* Navigation */
+        .nav {
+            display: flex;
+            justify-content: center;
+            background: white;
+            padding: 1rem;
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .nav-btn {
+            margin: 0 0.5rem;
+            padding: 0.7rem 1.3rem;
+            border-radius: 50px;
+            border: none;
+            background: transparent;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+            font-size: 0.95rem;
+        }
+        
+        .nav-btn.active {
+            background: var(--dog-color);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .nav-btn:hover:not(.active) {
+            transform: translateY(-2px);
+            color: var(--dog-color);
+        }
+        
+        .nav-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--dog-color);
+            transform: scaleX(0);
+            transition: var(--transition);
+        }
+        
+        .nav-btn:hover::after {
+            transform: scaleX(1);
+        }
+        
+        /* Notification badge */
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff4757;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        
+        /* Main content */
+        .container {
+            max-width: 1200px;
+            margin: 2.5rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        /* Search bar */
+        .search-container {
+            display: flex;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 0.8rem 1.2rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: var(--transition);
+            padding-left: 3rem;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--dog-color);
+            box-shadow: 0 0 0 3px rgba(255, 159, 67, 0.2);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary-text);
+        }
+        
+        /* Filter buttons */
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 50px;
+            background: white;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .filter-btn.active {
+            background: var(--dog-color);
+            color: white;
+            border-color: var(--dog-color);
+        }
+        
+        .filter-btn:hover {
+            background: #f1f2f6;
+        }
+        
+        .filter-btn.active:hover {
+            background: #e68a00;
+        }
+        
+        /* Pet cards grid */
+        .pet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.8rem;
+            margin: 2.5rem 0;
+        }
+        
+        .pet-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .pet-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .pet-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+        }
+        
+        .dog-card::before {
+            background: var(--dog-color);
+        }
+        
+        .cat-card::before {
+            background: var(--cat-color);
+        }
+        
+        .bird-card::before {
+            background: var(--bird-color);
+        }
+        
+        .small-pet-card::before {
+            background: var(--small-pet-color);
+        }
+        
+        .pet-image-container {
+            width: 100%;
+            height: 280px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .pet-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        
+        .pet-card:hover .pet-image {
+            transform: scale(1.08);
+        }
+        
+        .premium-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(135deg, #fdcb6e, #e17055);
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            box-shadow: var(--shadow-sm);
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .pet-info {
+            padding: 1.8rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .pet-name {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+        
+        .pet-name i {
+            margin-left: 0.5rem;
+            font-size: 1rem;
+            color: gold;
+        }
+        
+        .dog-name {
+            color: var(--dog-color);
+        }
+        
+        .cat-name {
+            color: var(--cat-color);
+        }
+        
+        .bird-name {
+            color: var(--bird-color);
+        }
+        
+        .small-pet-name {
+            color: var(--small-pet-color);
+        }
+        
+        .pet-species {
+            color: var(--secondary-text);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+        
+        .pet-bio {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            flex-grow: 1;
+            color: var(--primary-text);
+        }
+        
+        .pet-speak {
+            font-style: italic;
+            background: #f9f9f9;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.8rem;
+            position: relative;
+            color: var(--primary-text);
+        }
+        
+        .pet-speak::before {
+            content: '"';
+            font-size: 3rem;
+            position: absolute;
+            top: -1rem;
+            left: 0.5rem;
+            color: rgba(0,0,0,0.1);
+            font-family: serif;
+        }
+        
+        .translation {
+            font-size: 0.95rem;
+            color: var(--secondary-text);
+            padding-left: 1rem;
+            border-left: 3px solid #ddd;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+        
+        .pet-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.8rem;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        
+        .stat {
+            text-align: center;
+            flex: 1;
+            min-width: 80px;
+        }
+        
+        .stat-value {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--primary-text);
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--secondary-text);
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 0.8rem;
+        }
+        
+        .like-btn, .nope-btn, .paw-btn {
+            padding: 0.8rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+        }
+        
+        .like-btn {
+            background: var(--dog-color);
+            color: white;
+            flex: 1;
+        }
+        
+        .like-btn:hover {
+            background: #e68a00;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .nope-btn {
+            background: #dfe6e9;
+            color: #636e72;
+            flex: 1;
+        }
+        
+        .nope-btn:hover {
+            background: #b2bec3;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .paw-btn {
+            background: var(--cat-color);
+            color: white;
+            width: 50px;
+        }
+        
+        .paw-btn:hover {
+            background: #8a4dcc;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        /* Registration modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 500px;
+            padding: 2.5rem;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+            margin: 1rem;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .modal-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-text);
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--secondary-text);
+            transition: var(--transition);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .close-btn:hover {
+            transform: rotate(90deg);
+            color: var(--primary-text);
+            background: #f1f2f6;
+        }
+        
+        .form-group {
+            margin-bottom: 1.8rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-weight: 600;
+            color: var(--primary-text);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-family: inherit;
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--dog-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 159, 67, 0.2);
+        }
+        
+        .pet-type-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .pet-type-btn {
+            flex: 1;
+            min-width: 110px;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: var(--border-radius);
+            background: white;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .pet-type-btn i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .pet-type-btn.active {
+            border-color: var(--dog-color);
+            background: rgba(255, 159, 67, 0.1);
+        }
+        
+        .cat-btn.active {
+            border-color: var(--cat-color);
+            background: rgba(165, 94, 234, 0.1);
+        }
+        
+        .bird-btn.active {
+            border-color: var(--bird-color);
+            background: rgba(38, 222, 129, 0.1);
+        }
+        
+        .small-pet-btn.active {
+            border-color: var(--small-pet-color);
+            background: rgba(252, 92, 101, 0.1);
+        }
+        
+        .pet-type-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 1.1rem;
+            background: var(--dog-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            font-size: 1.05rem;
+            margin-top: 1rem;
+        }
+        
+        .submit-btn:hover {
+            background: #e68a00;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        /* Match modal */
+        .match-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .match-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .match-content {
+            background: white;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 450px;
+            padding: 2.5rem;
+            text-align: center;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .match-modal.active .match-content {
+            transform: scale(1);
+        }
+        
+        .match-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(90deg, var(--dog-color), var(--cat-color));
+        }
+        
+        .match-title {
+            font-size: 2rem;
+            color: var(--dog-color);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .match-text {
+            margin-bottom: 1.8rem;
+            color: var(--primary-text);
+            font-size: 1.1rem;
+        }
+        
+        .match-pets {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 2.5rem 0;
+            position: relative;
+        }
+        
+        .match-pet {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid white;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            z-index: 1;
+            transition: var(--transition);
+        }
+        
+        .match-pet:hover {
+            transform: scale(1.1);
+        }
+        
+        .match-pet:first-child {
+            margin-right: -30px;
+            z-index: 2;
+        }
+        
+        .heart {
+            position: absolute;
+            font-size: 3.5rem;
+            color: #ff6b81;
+            animation: pulse 1.5s infinite;
+            z-index: 3;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.3); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+        
+        .match-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+        
+        .message-btn, .keep-swiping-btn {
+            padding: 0.9rem 1.5rem;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            flex: 1;
+            min-width: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            font-size: 1rem;
+        }
+        
+        .message-btn {
+            background: var(--dog-color);
+        }
+        
+        .keep-swiping-btn {
+            background: #dfe6e9;
+            color: var(--secondary-text);
+        }
+        
+        .message-btn:hover {
+            background: #e68a00;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .keep-swiping-btn:hover {
+            background: #b2bec3;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        /* Loading spinner */
+        .loading-spinner {
+            display: none;
+            width: 100%;
+            text-align: center;
+            padding: 3rem 0;
+        }
+        
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid var(--dog-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2d3436;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            z-index: 1100;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            max-width: 90%;
+        }
+        
+        .toast.show {
+            opacity: 1;
+        }
+        
+        .toast i {
+            font-size: 1.3rem;
+        }
+        
+        .toast.success i {
+            color: #00b894;
+        }
+        
+        .toast.error i {
+            color: #ff7675;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .pet-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 1.5rem;
+            }
+            
+            .nav-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .pet-info {
+                padding: 1.5rem;
+            }
+            
+            .pet-name {
+                font-size: 1.3rem;
+            }
+            
+            .action-buttons button {
+                padding: 0.7rem;
+                font-size: 0.9rem;
+            }
+            
+            .match-pets {
+                margin: 2rem 0;
+            }
+            
+            .match-pet {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .modal-content {
+                padding: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .pet-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .pet-image-container {
+                height: 240px;
+            }
+            
+            .match-actions {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+            
+            .message-btn, .keep-swiping-btn {
+                width: 100%;
+            }
+            
+            .modal-content {
+                padding: 1.5rem;
+            }
+            
+            .pet-type-selector {
+                flex-direction: column;
+            }
+            
+            .pet-type-btn {
+                width: 100%;
+            }
+        }
+        
+        /* Animal language styles */
+        .animal-language {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+        }
+        
+        .dog-language .header {
+            background: linear-gradient(135deg, var(--dog-color), #e67e22);
+        }
+        
+        .cat-language .header {
+            background: linear-gradient(135deg, var(--cat-color), #8e44ad);
+        }
+        
+        .bird-language .header {
+            background: linear-gradient(135deg, var(--bird-color), #27ae60);
+        }
+        
+        .small-pet-language .header {
+            background: linear-gradient(135deg, var(--small-pet-color), #c0392b);
+        }
+        
+        .dog-language .nav-btn.active,
+        .dog-language .filter-btn.active {
+            background: var(--dog-color);
+        }
+        
+        .cat-language .nav-btn.active,
+        .cat-language .filter-btn.active {
+            background: var(--cat-color);
+        }
+        
+        .bird-language .nav-btn.active,
+        .bird-language .filter-btn.active {
+            background: var(--bird-color);
+        }
+        
+        .small-pet-language .nav-btn.active,
+        .small-pet-language .filter-btn.active {
+            background: var(--small-pet-color);
+        }
+        
+        .dog-language .like-btn {
+            background: var(--dog-color);
+        }
+        
+        .cat-language .like-btn {
+            background: var(--cat-color);
+        }
+        
+        .bird-language .like-btn {
+            background: var(--bird-color);
+        }
+        
+        .small-pet-language .like-btn {
+            background: var(--small-pet-color);
+        }
+        
+        .dog-language .paw-btn {
+            background: var(--dog-color);
+        }
+        
+        .cat-language .paw-btn {
+            background: var(--cat-color);
+        }
+        
+        .bird-language .paw-btn {
+            background: var(--bird-color);
+        }
+        
+        .small-pet-language .paw-btn {
+            background: var(--small-pet-color);
+        }
+    </style>
+</head>
+<body class="dog-language">
+    <!-- Header with animated pet parade -->
+    <header class="header">
+        <div class="pet-parade">
+            <div class="parade-pet" style="background-image: url('https://placedog.net/100/100?random=1'); animation-delay: 0s;"></div>
+            <div class="parade-pet" style="background-image: url('https://placekitten.com/100/100?random=1'); animation-delay: 3s;"></div>
+            <div class="parade-pet" style="background-image: url('https://placebird.com/100/100?random=1'); animation-delay: 6s;"></div>
+            <div class="parade-pet" style="background-image: url('https://placebear.com/100/100?random=1'); animation-delay: 9s;"></div>
+            <div class="parade-pet" style="background-image: url('https://placedog.net/100/100?random=2'); animation-delay: 12s;"></div>
+        </div>
+        <h1>WOOFMEOW 2.0</h1>
+        <p class="tagline">WHERE TAILS WAG, WHISKERS TWITCH, AND LOVE BLOOMS!</p>
+    </header>
+    
+    <!-- Navigation -->
+    <nav class="nav">
+        <button class="nav-btn active"><i class="fas fa-paw"></i> SNIFF AROUND</button>
+        <button class="nav-btn">
+            <i class="fas fa-comments"></i> BARK CHAT
+            <span class="badge">3</span>
+        </button>
+        <button class="nav-btn">
+            <i class="fas fa-heart"></i> PACK MATES
+            <span class="badge">1</span>
+        </button>
+        <button class="nav-btn" id="register-btn"><i class="fas fa-user-plus"></i> JOIN PACK</button>
+    </nav>
+    
+    <!-- Main content -->
+    <div class="container">
+        <!-- Search and filters -->
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" placeholder="SNIFF SNIFF... FIND FRIENDS...">
+        </div>
+        
+        <div class="filter-buttons">
+            <button class="filter-btn active"><i class="fas fa-dog"></i> BIG WOOFERS</button>
+            <button class="filter-btn"><i class="fas fa-cat"></i> SMOL MEOWERS</button>
+            <button class="filter-btn"><i class="fas fa-dove"></i> TWEET FRIENDS</button>
+            <button class="filter-btn"><i class="fas fa-paw"></i> OTHER PACKS</button>
+            <button class="filter-btn"><i class="fas fa-map-marker-alt"></i> NEARBY SNIFFS</button>
+            <button class="filter-btn"><i class="fas fa-heart"></i> POPULAR TAILS</button>
+        </div>
+        
+        <!-- Pet grid -->
+        <div class="pet-grid">
+            <!-- Dog card -->
+            <div class="pet-card dog-card">
+                <div class="pet-image-container">
+                    <img src="https://placedog.net/500/500?random=101" class="pet-image" alt="Buddy the Golden Retriever">
+                    <div class="premium-badge"><i class="fas fa-crown"></i> ALPHA DOG</div>
+                </div>
+                <div class="pet-info">
+                    <h2 class="pet-name dog-name">BUDDY</h2>
+                    <div class="pet-species">GOLDEN WOOFER • 2 MOONS • 5 SNIFFS AWAY</div>
+                    <div class="pet-bio">
+                        <div class="dog-speak">
+                            WOOF WOOF! *wag wag* BARK! *SNIFF SNIFF* pant pant WOOF! *tail wag* GRRR *play bow* RUFF RUFF!
+                        </div>
+                        <div class="translation dog-translation">
+                            "HI FRIEND! ME BUDDY! ME LOVE PLAY FETCH, EAT TREATS, AND SNIFF BUTTS! ME GOOD BOY WHO NEVER CHEW SHOES (OKAY, MAYBE ONCE). WANT TO BE BEST FRIENDS AND CHASE SQUIRRELS TOGETHER?"
+                        </div>
+                    </div>
+                    <div class="pet-stats">
+                        <div class="stat">
+                            <div class="stat-value">9/10</div>
+                            <div class="stat-label">ZOOMIES</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">100%</div>
+                            <div class="stat-label">LOYAL</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">🐶🐶🐶🐶</div>
+                            <div class="stat-label">SNIFF POWER</div>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="like-btn"><i class="fas fa-heart"></i> WOOF YES!</button>
+                        <button class="nope-btn"><i class="fas fa-times"></i> GROWL NO</button>
+                        <button class="paw-btn"><i class="fas fa-paw"></i></button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Cat card -->
+            <div class="pet-card cat-card">
+                <div class="pet-image-container">
+                    <img src="https://images.unsplash.com/photo-1568152950566-c1bf43f4ab28?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c2lhbWVzZSUyMGNhdHxlbnwwfHwwfHx8MA%3D%3D" class="pet-image" alt="Luna the Siamese Cat">
+                    <div class="premium-badge"><i class="fas fa-crown"></i> ROYAL MEOWER</div>
+                </div>
+                <div class="pet-info">
+                    <h2 class="pet-name cat-name">LUNA</h2>
+                    <div class="pet-species">FANCY MEOWER • 3 MOONS • 2 SNIFFS AWAY</div>
+                    <div class="pet-bio">
+                        <div class="cat-speak">
+                            *slow blink* Mrow... *prrt prrt* tail flick *Mew...* *stares judgmentally* *knocks things off table*
+                        </div>
+                        <div class="translation cat-translation">
+                            "I ALLOW YOU TO LOOK AT ME. MAYBE PET IF YOU HAVE TREATS. NO SUDDEN MOVEMENTS. I LIKE SUNBEAMS AND IGNORING YOU. WILL SLEEP ON YOUR FACE."
+                        </div>
+                    </div>
+                    <div class="pet-stats">
+                        <div class="stat">
+                            <div class="stat-value">5/10</div>
+                            <div class="stat-label">CUDDLE MODE</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">87%</div>
+                            <div class="stat-label">ALOOFNESS</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">😼😼😼</div>
+                            <div class="stat-label">SASS LEVEL</div>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="like-btn"><i class="fas fa-heart"></i> PURR YES</button>
+                        <button class="nope-btn"><i class="fas fa-times"></i> HISS NO</button>
+                        <button class="paw-btn"><i class="fas fa-paw"></i></button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bird card -->
+            <div class="pet-card bird-card">
+                <div class="pet-image-container">
+                    <img src="https://images.unsplash.com/photo-1602027439122-724dff5d9bc7?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c3VuJTIwY29udXJlfGVufDB8fDB8fHww" class="pet-image" alt="Mango the Sun Conure">
+                    <div class="premium-badge"><i class="fas fa-crown"></i> FLOCK LEADER</div>
+                </div>
+                <div class="pet-info">
+                    <h2 class="pet-name bird-name">MANGO</h2>
+                    <div class="pet-species">SUNNY TWEETER • 1 MOON • 3 SNIFFS AWAY</div>
+                    <div class="pet-bio">
+                        <div class="bird-speak">
+                            *squawk* Tweet tweet! *whistle* CHIRP CHIRP! *mimics phone ring* *screech* *whistles tune*
+                        </div>
+                        <div class="translation bird-translation">
+                            "HELLO PRETTY BIRD! I SING LOUD AT SUNRISE! I DANCE AND EAT SEEDS! YOU PRETTY! WANT TO SHARE PERCH AND PREEN EACH OTHER? I MAY CHEW YOUR FAVORITE THINGS!"
+                        </div>
+                    </div>
+                    <div class="pet-stats">
+                        <div class="stat">
+                            <div class="stat-value">8/10</div>
+                            <div class="stat-label">VOLUME</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">♫♫♫♫</div>
+                            <div class="stat-label">SONGS</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">🌈</div>
+                            <div class="stat-label">COLORS</div>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="like-btn"><i class="fas fa-heart"></i> CHIRP YES</button>
+                        <button class="nope-btn"><i class="fas fa-times"></i> CLAP NO</button>
+                        <button class="paw-btn"><i class="fas fa-paw"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Loading spinner for infinite scroll -->
+        <div class="loading-spinner" id="loading-spinner">
+            <div class="spinner"></div>
+            <p>SNIFFING OUT MORE FRIENDS...</p>
+        </div>
+    </div>
+    
+    <!-- Registration modal -->
+    <div class="modal" id="register-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">JOIN THE PACK</h2>
+                <button class="close-btn" id="close-register">&times;</button>
+            </div>
+            <form id="registration-form">
+                <div class="form-group">
+                    <label for="pet-name">PACK NAME</label>
+                    <input type="text" id="pet-name" placeholder="e.g., MAX OR LUNA" required>
+                </div>
+                <div class="form-group">
+                    <label for="pet-photo">SHOW YOUR FACE</label>
+                    <input type="file" id="pet-photo" accept="image/*" required>
+                    <div id="pet-preview-container" style="margin-top: 10px; display: none;">
+                        <img id="pet-preview" src="" alt="Pet Preview" style="max-width:100%; max-height:200px; border-radius:10px;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>PACK TYPE</label>
+                    <div class="pet-type-selector">
+                        <button type="button" class="pet-type-btn dog-btn active">
+                            <i class="fas fa-dog"></i>
+                            WOOFER
+                        </button>
+                        <button type="button" class="pet-type-btn cat-btn">
+                            <i class="fas fa-cat"></i>
+                            MEOWER
+                        </button>
+                        <button type="button" class="pet-type-btn bird-btn">
+                            <i class="fas fa-dove"></i>
+                            TWEETER
+                        </button>
+                        <button type="button" class="pet-type-btn small-pet-btn">
+                            <i class="fas fa-paw"></i>
+                            OTHER
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="pet-breed">BREED/PACK</label>
+                    <input type="text" id="pet-breed" placeholder="e.g., GOLDEN WOOFER OR TWEETY BIRD" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="pet-age">MOONS OLD</label>
+                    <select id="pet-age" required>
+                        <option value="">HOW MANY MOONS?</option>
+                        <option value="puppy">PUPPY/KITTEN (0-1 MOON)</option>
+                        <option value="young">YOUNG (1-3 MOONS)</option>
+                        <option value="adult">ADULT (3-7 MOONS)</option>
+                        <option value="senior">WISE ONE (7+ MOONS)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="pet-location">SNIFFING GROUNDS</label>
+                    <input type="text" id="pet-location" placeholder="e.g., BIG PARK OR TALL TREE" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="pet-bio">TELL PACK ABOUT YOU</label>
+                    <textarea id="pet-bio" rows="4" placeholder="WHAT MAKES YOU SPECIAL? FAVORITE SNACKS? BEST TRICKS?" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="premium-member" style="width: auto; display: inline-block; margin-right: 0.5rem;">
+                        BECOME ALPHA MEMBER (4.99 TREATS/MOON)
+                    </label>
+                </div>
+                
+                <button type="submit" class="submit-btn">
+                    <span id="submit-text">JOIN THE PACK</span>
+                    <i class="fas fa-paw"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Match modal -->
+    <div class="match-modal" id="match-modal">
+        <div class="match-content">
+            <div class="heart"><i class="fas fa-heart"></i></div>
+            <h2 class="match-title">PACK MATES!</h2>
+            <p class="match-text">YOU AND <span id="matched-pet-name">LUNA</span> SNIFFED EACH OTHER!</p>
+            
+            <div class="match-pets">
+                <img src="https://placedog.net/200/200?random=101" class="match-pet" id="user-pet-img" alt="Your pet">
+                <img src="https://placekitten.com/200/200?random=202" class="match-pet" id="matched-pet-img" alt="Matched pet">
+            </div>
+            
+            <p>START YOUR ADVENTURE TOGETHER!</p>
+            
+            <div class="match-actions">
+                <button class="message-btn"><i class="fas fa-comment-dots"></i> BARK CHAT</button>
+                <button class="keep-swiping-btn"><i class="fas fa-paw"></i> KEEP SNIFFING</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toast-message">WOOF! NOTIFICATION HERE</span>
+    </div>
+    
+    <!-- Language selector floating button -->
+    <div class="language-selector" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
+        <button id="language-btn" style="background: var(--dog-color); color: white; border: none; border-radius: 50%; width: 60px; height: 60px; font-size: 1.5rem; cursor: pointer; box-shadow: var(--shadow-lg);">
+            <i class="fas fa-language"></i>
+        </button>
+    </div>
+    
+    <script>
+        // DOM elements
+        const registerBtn = document.getElementById('register-btn');
+        const registerModal = document.getElementById('register-modal');
+        const closeRegisterBtn = document.getElementById('close-register');
+        const matchModal = document.getElementById('match-modal');
+        const registrationForm = document.getElementById('registration-form');
+        const petPhotoInput = document.getElementById('pet-photo');
+        const petPreviewContainer = document.getElementById('pet-preview-container');
+        const petPreview = document.getElementById('pet-preview');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const searchInput = document.querySelector('.search-input');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toast-message');
+        const languageBtn = document.getElementById('language-btn');
+        const body = document.body;
+        
+        // Current language
+        let currentLanguage = 'dog';
+        
+        // Language texts
+        const languages = {
+            dog: {
+                title: "WOOFMEOW 2.0",
+                tagline: "WHERE TAILS WAG, WHISKERS TWITCH, AND LOVE BLOOMS!",
+                nav: ["SNIFF AROUND", "BARK CHAT", "PACK MATES", "JOIN PACK"],
+                search: "SNIFF SNIFF... FIND FRIENDS...",
+                filters: ["BIG WOOFERS", "SMOL MEOWERS", "TWEET FRIENDS", "OTHER PACKS", "NEARBY SNIFFS", "POPULAR TAILS"],
+                registerTitle: "JOIN THE PACK",
+                loading: "SNIFFING OUT MORE FRIENDS...",
+                matchTitle: "PACK MATES!",
+                matchText: "YOU AND {name} SNIFFED EACH OTHER!",
+                matchActions: ["BARK CHAT", "KEEP SNIFFING"],
+                toast: "WOOF! NOTIFICATION HERE"
+            },
+            cat: {
+                title: "MEOWOOF 2.0",
+                tagline: "WHERE WHISKERS TWITCH, TAILS FLICK, AND NAPS ARE SHARED!",
+                nav: ["SCOUT TERRITORY", "PURR CHAT", "CLAIM MATES", "JOIN CLOWDER"],
+                search: "PRRT PRRT... FIND SERVANTS...",
+                filters: ["ROYAL MEOWERS", "LOUD WOOFERS", "SKY TWEETERS", "OTHER SUBJECTS", "NEARBY SUNBEAMS", "POPULAR SCRATCHERS"],
+                registerTitle: "JOIN THE CLOWDER",
+                loading: "SCOUTING MORE SUBJECTS...",
+                matchTitle: "CLAIMED MATE!",
+                matchText: "YOU HAVE ALLOWED {name} TO SERVE YOU!",
+                matchActions: ["PURR CHAT", "KEEP IGNORING"],
+                toast: "MEOW! NOTIFICATION HERE"
+            },
+            bird: {
+                title: "TWEETMEOW 2.0",
+                tagline: "WHERE WINGS FLAP, BEAKS CHIRP, AND SEEDS ARE SHARED!",
+                nav: ["FLY AROUND", "CHIRP CHAT", "FLOCK MATES", "JOIN MURMURATION"],
+                search: "CHIRP CHIRP... FIND FLOCK...",
+                filters: ["SKY SINGERS", "GROUND WOOFERS", "WINDOW MEOWERS", "OTHER BEAKS", "NEARBY PERCHES", "POPULAR TWEETERS"],
+                registerTitle: "JOIN THE MURMURATION",
+                loading: "FLYING TO FIND MORE FRIENDS...",
+                matchTitle: "FLOCK MATES!",
+                matchText: "YOU AND {name} ARE NOW PERCH MATES!",
+                matchActions: ["CHIRP CHAT", "KEEP FLYING"],
+                toast: "TWEET! NOTIFICATION HERE"
+            },
+            smallpet: {
+                title: "SQUEAKMEOW 2.0",
+                tagline: "WHERE WHISKERS TWITCH, PAWS SCRAMBLE, AND HIDES ARE SHARED!",
+                nav: ["EXPLORE TUNNELS", "SQUEAK CHAT", "BURROW MATES", "JOIN COLONY"],
+                search: "SNIFF SNIFF... FIND TUNNEL BUDDIES...",
+                filters: ["FURRY FRIENDS", "LOUD ONES", "FLAPPY ONES", "OTHER SMOL", "NEARBY HIDES", "POPULAR NIBBLERS"],
+                registerTitle: "JOIN THE COLONY",
+                loading: "DIGGING UP MORE FRIENDS...",
+                matchTitle: "BURROW MATES!",
+                matchText: "YOU AND {name} SHARE A TUNNEL NOW!",
+                matchActions: ["SQUEAK CHAT", "KEEP DIGGING"],
+                toast: "SQUEAK! NOTIFICATION HERE"
+            }
+        };
+        
+        // Show toast notification
+        function showToast(message, type = 'success') {
+            toast.className = `toast ${type}`;
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Set language
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            const langData = languages[lang];
+            
+            // Update UI elements
+            document.querySelector('h1').textContent = langData.title;
+            document.querySelector('.tagline').textContent = langData.tagline;
+            
+            // Update nav buttons
+            const navButtons = document.querySelectorAll('.nav-btn');
+            navButtons.forEach((btn, i) => {
+                btn.innerHTML = `<i class="${btn.querySelector('i').className}"></i> ${langData.nav[i]}`;
+                if (btn.querySelector('.badge')) {
+                    btn.innerHTML += `<span class="badge">${btn.querySelector('.badge').textContent}</span>`;
+                }
+            });
+            
+            // Update search placeholder
+            searchInput.placeholder = langData.search;
+            
+            // Update filter buttons
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach((btn, i) => {
+                btn.innerHTML = `<i class="${btn.querySelector('i').className}"></i> ${langData.filters[i]}`;
+            });
+            
+            // Update modal title
+            document.querySelector('.modal-title').textContent = langData.registerTitle;
+            
+            // Update loading text
+            document.querySelector('#loading-spinner p').textContent = langData.loading;
+            
+            // Update toast default
+            toastMessage.textContent = langData.toast;
+            
+            // Set body class for styling
+            body.className = `${lang}-language`;
+            
+            showToast(`Switched to ${lang} language!`);
+        }
+        
+        // Language button click
+        languageBtn.addEventListener('click', function() {
+            // Cycle through languages
+            const langs = ['dog', 'cat', 'bird', 'smallpet'];
+            const currentIndex = langs.indexOf(currentLanguage);
+            const nextIndex = (currentIndex + 1) % langs.length;
+            setLanguage(langs[nextIndex]);
+            
+            // Change button color based on language
+            if (langs[nextIndex] === 'dog') {
+                this.style.backgroundColor = 'var(--dog-color)';
+            } else if (langs[nextIndex] === 'cat') {
+                this.style.backgroundColor = 'var(--cat-color)';
+            } else if (langs[nextIndex] === 'bird') {
+                this.style.backgroundColor = 'var(--bird-color)';
+            } else {
+                this.style.backgroundColor = 'var(--small-pet-color)';
+            }
+        });
+        
+        // Pet type selection
+        const petTypeButtons = document.querySelectorAll('.pet-type-btn');
+        petTypeButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                petTypeButtons.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Change submit button color based on pet type
+                const submitBtn = document.querySelector('.submit-btn');
+                if (this.classList.contains('dog-btn')) {
+                    submitBtn.style.backgroundColor = 'var(--dog-color)';
+                } else if (this.classList.contains('cat-btn')) {
+                    submitBtn.style.backgroundColor = 'var(--cat-color)';
+                } else if (this.classList.contains('bird-btn')) {
+                    submitBtn.style.backgroundColor = 'var(--bird-color)';
+                } else {
+                    submitBtn.style.backgroundColor = 'var(--small-pet-color)';
+                }
+            });
+        });
+        
+        // Filter buttons
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (this.classList.contains('active')) {
+                    this.classList.remove('active');
+                } else {
+                    filterButtons.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                }
+                showToast(`Filtered by ${this.textContent.trim()}`);
+            });
+        });
+        
+        // Search functionality
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            if (searchTerm.length > 2) {
+                // In a real app, this would filter pet cards
+                console.log(`Searching for: ${searchTerm}`);
+            }
+        });
+        
+        // Photo preview
+        petPhotoInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                    showToast('File size too large (max 5MB)', 'error');
+                    this.value = '';
+                    return;
+                }
+                
+                const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                if (!validTypes.includes(file.type)) {
+                    showToast('Invalid file type (JPEG, PNG, GIF only)', 'error');
+                    this.value = '';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    petPreview.src = event.target.result;
+                    petPreviewContainer.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // Registration modal
+        registerBtn.addEventListener('click', () => {
+            registerModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        
+        closeRegisterBtn.addEventListener('click', () => {
+            registerModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === registerModal) {
+                registerModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+            if (e.target === matchModal) {
+                matchModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+        
+        // Form submission
+        registrationForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Show loading state
+            const submitText = document.getElementById('submit-text');
+            const originalText = submitText.textContent;
+            submitText.textContent = 'REGISTERING...';
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            
+            // Simulate API call
+            setTimeout(() => {
+                showToast('PACK JOINED SUCCESSFULLY! WELCOME!');
+                registerModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+                
+                // Reset form
+                registrationForm.reset();
+                petPreviewContainer.style.display = 'none';
+                submitText.textContent = originalText;
+                submitBtn.disabled = false;
+            }, 1500);
+        });
+        
+        // Like buttons - show match modal
+        const likeButtons = document.querySelectorAll('.like-btn');
+        likeButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const petCard = this.closest('.pet-card');
+                const petName = petCard.querySelector('.pet-name').textContent;
+                const petImage = petCard.querySelector('.pet-image').src;
+                
+                document.getElementById('matched-pet-name').textContent = petName.split(' ')[0]; // Remove premium icon text
+                document.getElementById('matched-pet-img').src = petImage;
+                
+                // Set random user pet image
+                const userPetTypes = ['dog', 'cat', 'bird'];
+                const randomType = userPetTypes[Math.floor(Math.random() * userPetTypes.length)];
+                document.getElementById('user-pet-img').src = 
+                    randomType === 'dog' ? 'https://placedog.net/200/200?random=' + Math.floor(Math.random() * 100) :
+                    randomType === 'cat' ? 'https://placekitten.com/200/200?random=' + Math.floor(Math.random() * 100) :
+                    'https://placebird.com/200/200?random=' + Math.floor(Math.random() * 100);
+                
+                // Update match modal text based on language
+                const langData = languages[currentLanguage];
+                document.querySelector('.match-title').textContent = langData.matchTitle;
+                document.querySelector('.match-text').textContent = langData.matchText.replace('{name}', petName.split(' ')[0]);
+                document.querySelector('.message-btn').innerHTML = `<i class="fas fa-comment-dots"></i> ${langData.matchActions[0]}`;
+                document.querySelector('.keep-swiping-btn').innerHTML = `<i class="fas fa-paw"></i> ${langData.matchActions[1]}`;
+                
+                matchModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                
+                // Create floating hearts
+                for (let i = 0; i < 5; i++) {
+                    setTimeout(() => {
+                        const hearts = document.createElement('div');
+                        hearts.className = 'heart floating-heart';
+                        hearts.innerHTML = '<i class="fas fa-heart"></i>';
+                        hearts.style.position = 'absolute';
+                        hearts.style.top = Math.random() * 100 + '%';
+                        hearts.style.left = Math.random() * 100 + '%';
+                        hearts.style.animationDelay = Math.random() + 's';
+                        hearts.style.fontSize = (Math.random() * 2 + 1) + 'rem';
+                        hearts.style.opacity = Math.random() * 0.5 + 0.5;
+                        matchModal.querySelector('.match-content').appendChild(hearts);
+                        
+                        setTimeout(() => {
+                            hearts.remove();
+                        }, 3000);
+                    }, i * 300);
+                }
+                
+                showToast(`YOU MATCHED WITH ${petName.split(' ')[0]}!`);
+            });
+        });
+        
+        // Close match modal
+        matchModal.querySelector('.keep-swiping-btn').addEventListener('click', () => {
+            matchModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            
+            // Remove all floating hearts
+            document.querySelectorAll('.floating-heart').forEach(heart => {
+                heart.remove();
+            });
+        });
+        
+        // Message button in match modal
+        matchModal.querySelector('.message-btn').addEventListener('click', () => {
+            matchModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            showToast('CHAT OPENED WITH YOUR MATCH!');
+        });
+        
+        // Animate parade pets with different delays
+        document.querySelectorAll('.parade-pet').forEach((pet, index) => {
+            pet.style.animationDelay = index * 3 + 's';
+        });
+        
+        // Navigation buttons
+        const navButtons = document.querySelectorAll('.nav-btn');
+        navButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                navButtons.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                if (this.id !== 'register-btn') {
+                    showToast(`SHOWING ${this.textContent.trim()} SECTION`);
+                }
+            });
+        });
+        
+        // Simulate loading more pets when scrolling
+        let isLoading = false;
+        window.addEventListener('scroll', () => {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500 && !isLoading) {
+                isLoading = true;
+                loadingSpinner.style.display = 'block';
+                
+                // Simulate API call
+                setTimeout(() => {
+                    // In a real app, this would append new pet cards
+                    console.log('Loaded more pets');
+                    loadingSpinner.style.display = 'none';
+                    isLoading = false;
+                    showToast('FOUND NEW FRIENDS!');
+                }, 1500);
+            }
+        });
+        
+        // Initialize with dog language
+        setLanguage('dog');
+    </script>
+</body>
+</html>
